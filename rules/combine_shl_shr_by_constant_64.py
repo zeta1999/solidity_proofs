@@ -2,7 +2,11 @@ from z3 import *
 from rule import Rule
 
 """
+Rule:
 SHR(B, SHL(A, X)) -> AND(SH[L/R]([B - A / A - B], X), Mask)
+Requirements:
+A < BitWidth
+B < BitWidth
 """
 
 rule = Rule()

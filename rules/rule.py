@@ -25,6 +25,7 @@ class Rule:
 		elif result == unsat:
 			raise BaseException('Requirements are unsatisfiable.')
 
+		self.solver.push()
 		self.solver.add(self.constraints)
 		self.solver.add(_nonopt != _opt)
 
@@ -33,3 +34,4 @@ class Rule:
 			raise BaseException('Unable to prove rule.')
 		elif result == sat:
 			raise BaseException('Rule is incorrect.')
+		self.solver.pop()
