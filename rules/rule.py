@@ -33,5 +33,6 @@ class Rule:
 		if result == unknown:
 			raise BaseException('Unable to prove rule.')
 		elif result == sat:
-			raise BaseException('Rule is incorrect.')
+			m = self.solver.model()
+			raise BaseException('Rule is incorrect.\nModel: ' + str(m))
 		self.solver.pop()
