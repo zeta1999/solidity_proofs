@@ -1,8 +1,9 @@
-from z3 import *
 from rule import Rule
+from opcodes import *
 
 """
 Rule:
+mask = shlWorkaround(u256(-1), unsigned(A.d())) >> unsigned(B.d())
 SHR(B, SHL(A, X)) -> AND(SH[L/R]([B - A / A - B], X), Mask)
 Requirements:
 A < BitWidth
@@ -14,29 +15,29 @@ rule = Rule()
 n_bits = 64
 
 # Input vars
-x = BitVec('x', n_bits)
-a = BitVec('a', n_bits)
-b = BitVec('b', n_bits)
+X = BitVec('X', n_bits)
+A = BitVec('A', n_bits)
+B = BitVec('B', n_bits)
 
 # Constants
-bv_n = BitVecVal(n_bits, n_bits)
+BitWidth = BitVecVal(n_bits, n_bits)
 
 # Requirements
-rule.require(ULT(a, bv_n))
-rule.require(ULT(b, bv_n))
+rule.require(ULT(A, BitWidth))
+rule.require(ULT(B, BitWidth))
 
 # Non optimized result
-nonopt = LShR(x << a, b)
+nonopt = SHR(B, SHL(A, X))
 
 # Optimized result
-mask = (LShR(Int2BV(IntVal(-1), n_bits) << a, b))
+Mask = SHR(B, SHL(A, Int2BV(IntVal(-1), n_bits)))
 opt = If(
-	UGT(a, b),
-	(x << (a - b)) & mask,
+	UGT(A, B),
+	AND(SHL(A - B, X), Mask),
 		If(
-			UGT(b, a),
-			LShR(x, b - a) & mask,
-			x & mask
+			UGT(B, A),
+			AND(SHR(B - A, X), Mask),
+			AND(X, Mask)
 		)
 	)
 
