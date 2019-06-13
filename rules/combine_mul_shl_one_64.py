@@ -1,5 +1,5 @@
-from z3 import *
 from rule import Rule
+from opcodes import *
 
 """
 Rule:
@@ -13,21 +13,21 @@ rule = Rule()
 n_bits = 64
 
 # Input vars
-x = BitVec('x', n_bits)
-y = BitVec('y', n_bits)
+X = BitVec('X', n_bits)
+Y = BitVec('Y', n_bits)
 
 # Constants
-bv_one = BitVecVal(1, n_bits)
+ONE = BitVecVal(1, n_bits)
 
 # Requirements
 
 # Non optimized result
-nonopt_1 = x * (bv_one << y)
-nonopt_2 = (bv_one << x) * y;
+nonopt_1 = MUL(X, SHL(Y, ONE))
+nonopt_2 = MUL(SHL(X, ONE), Y)
 
 # Optimized result
-opt_1 = x << y;
-opt_2 = y << x;
+opt_1 = SHL(Y, X)
+opt_2 = SHL(X, Y)
 
 rule.check(nonopt_1, opt_1)
 rule.check(nonopt_2, opt_2)
