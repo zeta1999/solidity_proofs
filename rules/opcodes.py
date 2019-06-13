@@ -33,6 +33,9 @@ def SLT(x, y):
 def SGT(x, y):
 	return x > y
 
+def NOT(x):
+	return ~x
+
 def AND(x, y):
 	return x & y
 
